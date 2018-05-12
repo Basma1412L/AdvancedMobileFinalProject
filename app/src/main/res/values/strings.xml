@@ -5,7 +5,7 @@
         <item>Prep</item>
         <item>First</item>
         <item>Second</item>
-        <item>Thid</item>
+        <item>Third</item>
         <item>Fourth</item>
         <item>Fifth</item>
         <item>Sixth</item>
@@ -19,7 +19,14 @@
 
 
     <array name="status">
-        <item>Reserved</item>
         <item>Free</item>
+        <item>Reserved</item>
+        <item>Reqested</item>
+        <item>Denied</item>
+    </array>
+
+    <array name="firststatus">
+        <item>Free</item>
+        <item>Reserved</item>
     </array>
 </resources>

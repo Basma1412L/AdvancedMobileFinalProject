@@ -52,6 +52,11 @@ public class RegisterationActivity extends AppCompatActivity {
 
 
     @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -125,7 +130,7 @@ public class RegisterationActivity extends AppCompatActivity {
             }
         });
 
-        database = FirebaseDatabase.getInstance();
+        database =Utils.getDatabase();
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +146,7 @@ public class RegisterationActivity extends AppCompatActivity {
                 final  DatabaseReference pRef = database.getReference("User");
                 String id = pRef.push().getKey();
                 User p = new User(uid,name_str,email_str,gender_str,faculty_str,years_str,imageURI);
-                pRef.child(id).setValue(p);
+                pRef.child(uid).setValue(p);
 
                 Intent intent = new Intent(RegisterationActivity.this,UserProfileActivity.class);
                 startActivity(intent);

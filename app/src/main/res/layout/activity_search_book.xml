@@ -39,15 +39,22 @@
                     android:id="@+id/editText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:background="@android:color/background_light"
                     android:ems="10"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:maxLength="50"
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/button3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:background="@android:color/background_dark"
                     android:text="Search"

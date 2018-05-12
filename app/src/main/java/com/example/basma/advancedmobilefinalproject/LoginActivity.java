@@ -29,6 +29,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
     @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -66,8 +71,8 @@ public class LoginActivity extends AppCompatActivity {
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w("f", "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+               //                     Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    //        Toast.LENGTH_SHORT).show();
                                //     updateUI(null);
                                 }
 

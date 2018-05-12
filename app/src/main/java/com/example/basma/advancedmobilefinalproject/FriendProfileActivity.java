@@ -3,9 +3,11 @@ package com.example.basma.advancedmobilefinalproject;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,15 +30,22 @@ public class FriendProfileActivity extends AppCompatActivity {
 
     TextView nametxt;
     TextView facultytxt;
+    TextView emailtxt;
     TextView yeartxt;
     ImageView profilePicture;
     ListView searchListView;
     FriendList adapter;
 
 
+
     public static Bitmap decodeFromFirebaseBase64(String image) throws IOException {
         byte[] decodedByteArray = android.util.Base64.decode(image, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
     }
 
     @Override
@@ -48,6 +57,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         String id = intent.getStringExtra("id");
 
         nametxt=(TextView)findViewById(R.id.nameTxt);
+        emailtxt=(TextView)findViewById(R.id.emailTxt);
         facultytxt=(TextView)findViewById(R.id.facultyTxt);
         yeartxt=(TextView)findViewById(R.id.yearTxt);
         profilePicture=(ImageView)findViewById(R.id.imageView);
@@ -55,14 +65,13 @@ public class FriendProfileActivity extends AppCompatActivity {
 
 
 
+        database = Utils.getDatabase();
+
 
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
 
-        database.setPersistenceEnabled(true);
-
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference database = Utils.getDatabase().getReference();
         DatabaseReference ref = database.child("User").child(id);
 
         try
@@ -75,10 +84,9 @@ public class FriendProfileActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Boolean userFound = false;
 
-
-
                             User profileUser=dataSnapshot.getValue(User.class);
                             nametxt.setText(profileUser.getName());
+                            emailtxt.setText(profileUser.email);
                             facultytxt.setText(profileUser.getFaculty());
                             yeartxt.setText(profileUser.getYears());
 
@@ -91,11 +99,11 @@ public class FriendProfileActivity extends AppCompatActivity {
 
                             }
                             List<Book> userBook = profileUser.getBooks();
-                    adapter = new FriendList(FriendProfileActivity.this,userBook);
+                    adapter = new FriendList(FriendProfileActivity.this,profileUser.getName(),userBook);
                     searchListView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
-                    Toast.makeText(FriendProfileActivity.this, " user found"+ userBook.size(), Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(FriendProfileActivity.this, " user found"+ userBook.size(), Toast.LENGTH_SHORT).show();
 
 
 

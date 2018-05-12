@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/readingbook"
     android:orientation="vertical"
-    tools:context=".SignUpActivity">
-
+    tools:context=".RegisterationActivity">
 
     <LinearLayout
         android:id="@+id/container1"
@@ -21,6 +20,8 @@
         android:background="?attr/colorBackgroundFloating"
         android:orientation="vertical">
 
+
+
         <LinearLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
@@ -33,77 +34,110 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:text="Sign Up"
+                android:text="Exchange Request"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@android:color/background_dark"
                 android:textSize="36sp"
                 android:textStyle="bold|italic" />
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_weight="2"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textViewEmail"
+                    android:id="@+id/Sender"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:gravity="center"
-                    android:text="Email"
+                    android:text="Requester Name"
+                    android:textColor="@android:color/background_dark"
                     android:textSize="24sp"
                     android:textStyle="bold|italic" />
 
 
                 <EditText
-                    android:id="@+id/editTextEmail"
+                    android:id="@+id/senderName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:maxLength="80"
+                    android:maxLength="20"
                     android:textSize="24sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="20dp"
                 android:layout_weight="2"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textViewPassword"
+                    android:id="@+id/textViewName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="3"
+                    android:layout_weight="2"
                     android:gravity="center"
-                    android:text="Password"
+                    android:text="Requested Book"
+                    android:textColor="@android:color/background_dark"
                     android:textSize="24sp"
                     android:textStyle="bold|italic" />
 
 
                 <EditText
-                    android:id="@+id/editTextPassword"
+                    android:id="@+id/requestedBook"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="5"
+                    android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="textPersonName|textPassword"
+                    android:inputType="textPersonName"
                     android:maxLength="20"
                     android:textSize="24sp" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/email"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="Exchanged Book"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="24sp"
+                    android:textStyle="bold|italic" />
+
+
+                <EditText
+                    android:id="@+id/exchanghedBook"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:maxLength="20"
+                    android:textSize="24sp" />
+
+
+            </LinearLayout>
+
+
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/doneBtn"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginBottom="20dp"
@@ -111,7 +145,7 @@
                 android:layout_marginRight="30dp"
                 android:layout_weight="1"
                 android:background="@android:color/background_dark"
-                android:text="Sign Up!"
+                android:text="Accept!"
                 android:textColor="@android:color/background_light"
                 android:textSize="24sp" />
 

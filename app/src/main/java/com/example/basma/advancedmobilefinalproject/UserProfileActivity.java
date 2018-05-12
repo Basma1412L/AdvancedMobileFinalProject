@@ -34,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,6 +108,11 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
@@ -120,9 +126,8 @@ public class UserProfileActivity extends AppCompatActivity {
         searchBtn=(Button)findViewById(R.id.goSearch);
         profilePic=(ImageView)findViewById(R.id.imageView);
         saveChanges=(Button)findViewById(R.id.button7);
+        database = Utils.getDatabase();
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        database.setPersistenceEnabled(true);
         DatabaseReference myRef = database.getReference("User");
         FirebaseUser currentUser = mAuth.getCurrentUser();
         adapter = new BooksList(UserProfileActivity.this,userBooks);
@@ -134,6 +139,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
         else
         {
+            idR=currentUser.getUid();
             email = currentUser.getEmail();
         }
 
@@ -187,20 +193,22 @@ public class UserProfileActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                final DataSnapshot dataSnapshot1=dataSnapshot;
                 Boolean userFound = false;
 
                 userBooks.clear();
                 for(DataSnapshot data : dataSnapshot.getChildren())
                 {
-                    user_emailR = data.child("email").getValue(String.class);
-                    if(email.equals(user_emailR)) {
+                   String  user_emailR_temp = data.child("email").getValue(String.class);
+                    if(email.equals(user_emailR_temp)) {
                         profileUser=data.getValue(User.class);
-                        Toast.makeText(UserProfileActivity.this, " user found"+ user_emailR, Toast.LENGTH_SHORT).show();
+                 //       Toast.makeText(UserProfileActivity.this, " user found"+ user_emailR, Toast.LENGTH_SHORT).show();
                         userFound = true;
+                        user_emailR=user_emailR_temp;
                         nameR = data.child("name").getValue(String.class);
                         facultyR = data.child("faculty").getValue(String.class);
                         yearR = data.child("years").getValue(String.class);
-                        idR=data.child("id").getValue(String.class);
+                     //   idR=data.child("id").getValue(String.class);
                         genderR = data.child("gender").getValue(String.class);
                         encodedImage = data.child(("profilePicture")).getValue(String.class);
                         nameTxt.setText(nameR);
@@ -219,10 +227,89 @@ public class UserProfileActivity extends AppCompatActivity {
                         }
 
                         DataSnapshot ds=data.child("books");
-                        for (DataSnapshot dsBook: ds.getChildren()) {
-                            Book b = dsBook.getValue(Book.class);
+                        for (final DataSnapshot dsBook: ds.getChildren()) {
+                           final Book b = dsBook.getValue(Book.class);
+                            String bookStatus=dsBook.child("book_Status").getValue().toString();
+                            if(bookStatus.equals("Requested")) {
+                                ExchangeRequest excRequest1 = dsBook.getValue(ExchangeRequest.class);
+                                final ExchangeRequest excRequest=b.getExchange_request();
+
+                             //   String bookExchanger = dsBook.child("exchanger_email").getValue().toString();
+                              //  Toast.makeText(UserProfileActivity.this, excRequest.exchanger_email+" wants to xchange your book", Toast.LENGTH_SHORT).show();
+
+                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(UserProfileActivity.this);
+                                LayoutInflater inflater= getLayoutInflater();
+                                final View displayView = inflater.inflate(R.layout.exchange_request,null);
+                                dialogBuilder.setView(displayView);
+
+                                final EditText exchangerName = (EditText)displayView.findViewById(R.id.editTextName);
+                                final EditText exchangedBook = (EditText) displayView.findViewById(R.id.exchangedBook);
+                                Button acceptExchange=(Button)displayView.findViewById(R.id.confirmExchange);
+                                Button denyExchange=(Button)displayView.findViewById(R.id.declineExchange);
+
+
+                                exchangerName.setText(excRequest.getExchanger_name());
+                                exchangedBook.setText(excRequest.getExchanged_book());
+
+
+
+
+                                final AlertDialog alertDialog = dialogBuilder.create();
+                                alertDialog.show();
+
+
+                                acceptExchange.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        b.setBook_Status("Exchanged");
+                                        dsBook.getRef().setValue(b);
+
+
+
+                                        for(DataSnapshot data2 : dataSnapshot1.getChildren()) {
+                                            user_emailR = data2.child("email").getValue(String.class);
+                                            if (excRequest.getExchanger_name().equals(user_emailR)) {
+                                               User profileUser2 = data2.getValue(User.class);
+                                                DataSnapshot ds2=data2.child("books");
+                                                for (final DataSnapshot dsBook: ds2.getChildren()) {
+                                                    final Book b2 = dsBook.getValue(Book.class);
+                                                    b2.setBook_Status("Exchanged");
+                                                    dsBook.getRef().setValue(b2);
+
+                                                }
+                                            }
+                                        }
+
+
+
+
+
+                                        alertDialog.dismiss();
+
+                                    }
+                                });
+
+
+                                denyExchange.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+
+                                        b.setBook_Status("Denied");
+                                        dsBook.getRef().setValue(b);
+                                        alertDialog.dismiss();
+
+                                    }
+                                });
+
+
+
+
+                            }
+
                             userBooks.add(b);
-                     //       String bookName=dsBook.child("book_Name").getValue().toString();
+                         //   String bookName=dsBook.child("book_Name").getValue().toString();
                          //  userBooks.add()
                         }
                         adapter.notifyDataSetChanged();
@@ -235,7 +322,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 }
                 if(!userFound){
-                    Toast.makeText(UserProfileActivity.this, "No user found", Toast.LENGTH_SHORT).show();
+           //         Toast.makeText(UserProfileActivity.this, "No user found", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(UserProfileActivity.this,RegisterationActivity.class);
+                    startActivity(i);
+                    finish();
                 }
 
             }
@@ -281,6 +371,8 @@ public class UserProfileActivity extends AppCompatActivity {
                    // profileUser
                     if(imageUpdatedURI.equals(""))
                         updateUser(idR,nameR,user_emailR,genderR,facultyR,yearR,userBooks);
+                    else
+                        updateUser(idR,nameR,user_emailR,genderR,facultyR,yearR,imageUpdatedURI,userBooks);
                     adapter.notifyDataSetChanged();
                     alertDialog.dismiss();
                 }
@@ -386,22 +478,22 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private boolean updateUser(String id, String name_str, String email_str, String gender_str, String faculty_str, String years_str,String imageUpdated)
     {
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("User").child(id);
+        DatabaseReference dbRef = Utils.getDatabase().getReference("User").child(id);
         User user = new User(id,name_str,email_str,gender_str,faculty_str,years_str,imageUpdated,userBooks);
         dbRef .setValue(user);
-        Toast.makeText(this,"User Updated",Toast.LENGTH_SHORT).show();
+    //    Toast.makeText(this,"User Updated",Toast.LENGTH_SHORT).show();
         return true;
     }
 
 
     private boolean updateUser(String id, String name_str, String email_str, String gender_str, String faculty_str, String years_str)
     {
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("User").child(id);
+        DatabaseReference dbRef = Utils.getDatabase().getReference("User").child(id);
         User user = new User(id,name_str,email_str,gender_str,faculty_str,years_str,userBooks);
 
         dbRef .setValue(user);
 
-        Toast.makeText(this,"User Updated",Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this,"User Updated",Toast.LENGTH_SHORT).show();
 
         return true;
 
@@ -409,14 +501,31 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
 
+
+    private boolean updateUser(String id, String name_str, String email_str, String gender_str, String faculty_str, String years_str,String imageUpdated, List<Book>userBooks)
+    {
+        DatabaseReference dbRef = Utils.getDatabase().getReference("User").child(id);
+        User user = new User(id,name_str,email_str,gender_str,faculty_str,years_str,imageUpdated,userBooks);
+
+        dbRef .setValue(user);
+
+        // Toast.makeText(this,"User Updated",Toast.LENGTH_SHORT).show();
+
+        return true;
+
+
+    }
+
+
+
     private boolean updateUser(String id, String name_str, String email_str, String gender_str, String faculty_str, String years_str, List<Book>userBooks)
     {
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("User").child(id);
+        DatabaseReference dbRef = Utils.getDatabase().getReference("User").child(id);
         User user = new User(id,name_str,email_str,gender_str,faculty_str,years_str,encodedImage,userBooks);
 
         dbRef .setValue(user);
 
-        Toast.makeText(this,"User Updated",Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this,"User Updated",Toast.LENGTH_SHORT).show();
 
         return true;
 

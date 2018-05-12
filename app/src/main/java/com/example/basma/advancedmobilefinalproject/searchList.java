@@ -49,7 +49,6 @@ public class searchList extends ArrayAdapter {
         final   TextView txtName=(TextView)listViewItem.findViewById(R.id.bookName);
         final  TextView txtStatus=(TextView)listViewItem.findViewById(R.id.bookStatus);
         Button viewProfile = (Button)listViewItem.findViewById(R.id.viewprofile);
-        Button exchange = (Button)listViewItem.findViewById(R.id.exchange);
         final searchItem searchItem =searchList.get(position);
 
         txtName.setText(searchItem.getUser().getName());

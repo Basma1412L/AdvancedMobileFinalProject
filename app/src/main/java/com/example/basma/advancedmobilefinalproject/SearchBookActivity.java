@@ -30,20 +30,23 @@ public class SearchBookActivity extends AppCompatActivity {
     searchList adapter;
 
     @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_book);
         bookName = (EditText)findViewById(R.id.editText);
         search=(Button)findViewById(R.id.button3);
         searchListView = (ListView)findViewById(R.id.booksList);
+        final FirebaseDatabase database = Utils.getDatabase();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         adapter = new searchList(SearchBookActivity.this,resultedUsers);
         searchListView.setAdapter(adapter);
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        database.setPersistenceEnabled(true);
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +78,7 @@ public class SearchBookActivity extends AppCompatActivity {
                                     String yearR = data.child("years").getValue(String.class);
                                     String idR=data.child("id").getValue(String.class);
                                     String genderR = data.child("gender").getValue(String.class);
-                                    Toast.makeText(SearchBookActivity.this, " user found"+nameR, Toast.LENGTH_SHORT).show();
+              //                      Toast.makeText(SearchBookActivity.this, " user found"+nameR, Toast.LENGTH_SHORT).show();
 
                                     searchItem current = new searchItem(profileUser,book_status);
                                     resultedUsers.add(current);
@@ -91,7 +94,7 @@ public class SearchBookActivity extends AppCompatActivity {
 
                         }
                         if(!bookFound){
-                            Toast.makeText(SearchBookActivity.this, "No user found", Toast.LENGTH_SHORT).show();
+                        //    Toast.makeText(SearchBookActivity.this, "No user found", Toast.LENGTH_SHORT).show();
                         }
 
                     }

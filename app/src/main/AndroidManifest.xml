@@ -15,16 +15,16 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name=".LoginActivity" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".SignUpActivity" android:noHistory="true" />
         <activity android:name=".UserProfileActivity" />
-        <activity android:name=".FriendProfileActivity" />
-        <activity android:name=".SearchBookActivity" />
+        <activity android:name=".FriendProfileActivity" android:noHistory="true" />
+        <activity android:name=".SearchBookActivity" android:noHistory="true" />
         <activity android:name=".RegisterationActivity" />
     </application>
 
