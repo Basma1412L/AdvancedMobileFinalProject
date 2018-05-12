@@ -57,18 +57,13 @@ public class FriendList extends ArrayAdapter {
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         View  listViewItem = inflater.inflate(R.layout.book_item_friend,null,true);
-
         final TextView txtName=(TextView)listViewItem.findViewById(R.id.bookName2);
         final  TextView txtStatus=(TextView)listViewItem.findViewById(R.id.bookStatus2);
         Button exchange = (Button)listViewItem.findViewById(R.id.exchange2);
         final Book book =searchList.get(position);
-
         txtName.setText(book.getBook_Name());
         txtStatus.setText(book.getBook_Status());
-
-
-
-
+        final String bookStatus="";
         exchange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,10 +81,10 @@ public class FriendList extends ArrayAdapter {
                 dialogBuilder.setView(displayView);
                 final Spinner requested = (Spinner) displayView.findViewById(R.id.mybooks);
                 final Spinner exchanged = (Spinner) displayView.findViewById(R.id.friendbooks);
+                final TextView note=(TextView)displayView.findViewById(R.id.note);
                 String selectedRequest="";
                 Button register = (Button) displayView.findViewById(R.id.doneBtn);
-
-
+                Button exitBtn = (Button) displayView.findViewById(R.id.exitBtn);
                 mAuth = FirebaseAuth.getInstance();
 
               final  FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -100,12 +95,13 @@ public class FriendList extends ArrayAdapter {
 
 
 
+
                 ref.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Boolean userFound = false;
                         User profileUser = dataSnapshot.getValue(User.class);
-                        List<Book> userBooks = profileUser.getBooks();
+                        final List<Book> userBooks = profileUser.getBooks();
                         int size = userBooks.size();
                         String[] arraySpinner = new String[size];
                         for (int i = 0; i < size; i++) {
@@ -151,6 +147,12 @@ public class FriendList extends ArrayAdapter {
 
 
 
+                exitBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
 
                 register.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -158,11 +160,38 @@ public class FriendList extends ArrayAdapter {
 
                         FirebaseDatabase database = Utils.getDatabase();
                         DatabaseReference myRef2 = database.getReference("User");
-
                         myRef2.addValueEventListener(new ValueEventListener() {
 
+                            String selectedExchanghed = exchanged.getSelectedItem().toString();
+                            String exchangedStatus="";
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                String currentUserId = mAuth.getCurrentUser().getUid();
+                                User currentProfile = dataSnapshot.child(currentUserId).getValue(User.class);
+                                final  List<Book> userBooks = currentProfile.getBooks();
+                                for (Book bb:userBooks)
+                                {
+                                    if(bb.getBook_Name().equals(selectedExchanghed))
+                                    {
+                                        exchangedStatus=bb.getBook_Status();
+                                        break;
+                                    }
+                                }
+
+                              /*  for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                                    User profileUser = dataSnapshot.getValue(User.class);
+                                   final  List<Book> userBooks = profileUser.getBooks();
+                                    for (Book bb:userBooks)
+                                    {
+                                        if(bb.getBook_Name().equals(selectedExchanghed))
+                                        {
+                                            exchangedStatus=bb.getBook_Status();
+                                            break;
+                                        }
+                                    }
+                                }
+*/
 
 
                                 for(DataSnapshot data : dataSnapshot.getChildren())
@@ -173,6 +202,9 @@ public class FriendList extends ArrayAdapter {
                                         DataSnapshot ds=data.child("books");
                                         for (DataSnapshot dsBook: ds.getChildren()) {
                                             Book b = dsBook.getValue(Book.class);
+
+
+
                                             if(b.getBook_Name().equals(requested.getSelectedItem().toString())) {
 
                                                 String userEmail = currentUser.getEmail();
@@ -181,17 +213,18 @@ public class FriendList extends ArrayAdapter {
                                           //          Toast.makeText(context, "Hey you can't exchange a book with yourself 0_0 !", Toast.LENGTH_LONG).show();
                                                 } else {
                                                     String status = b.getBook_Status();
-                                                    if (status.equals("Free")) {
+                                                    if (status.equals("Free")&&exchangedStatus.equals("Free")) {
                                                         b.setBook_Status("Requested");
                                                         ExchangeRequest exchangeRequest=new ExchangeRequest(userEmail,exchanged.getSelectedItem().toString());
                                                         b.setExchange_request(exchangeRequest);
                                                         dsBook.getRef().setValue(b);
+                                                        alertDialog.dismiss();
                                                         break;
                                                     }
-                                                    else if (status.equals("Requested")) {
-                                                   //     Toast.makeText(context, "This book is already requested, try something else", Toast.LENGTH_LONG).show();
-                                                    }
+
                                                     else {
+
+                                                        note.setText( "This book can not be requested, try something else");
                                                 //        Toast.makeText(context, "This book can not be requested, try something else", Toast.LENGTH_LONG).show();
 
                                                     }
@@ -199,7 +232,6 @@ public class FriendList extends ArrayAdapter {
                                             }
 
                                         }
-                                        alertDialog.dismiss();
 
 
                                     }

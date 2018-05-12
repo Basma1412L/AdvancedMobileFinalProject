@@ -63,21 +63,14 @@ public class FriendProfileActivity extends AppCompatActivity {
         profilePicture=(ImageView)findViewById(R.id.imageView);
         searchListView = (ListView)findViewById(R.id.booksList);
 
-
-
         database = Utils.getDatabase();
 
-
-
         mAuth = FirebaseAuth.getInstance();
-
         DatabaseReference database = Utils.getDatabase().getReference();
         DatabaseReference ref = database.child("User").child(id);
 
         try
         {
-
-
 
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -103,31 +96,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                     searchListView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
-                  //  Toast.makeText(FriendProfileActivity.this, " user found"+ userBook.size(), Toast.LENGTH_SHORT).show();
-
-
-
                     userFound = true;
-                         /*   nameR = data.child("name").getValue(String.class);
-                            facultyR = data.child("faculty").getValue(String.class);
-                            yearR = data.child("years").getValue(String.class);
-                            idR=data.child("id").getValue(String.class);
-                            genderR = data.child("gender").getValue(String.class);
-                            encodedImage = data.child(("profilePicture")).getValue(String.class);
-                            nameTxt.setText(nameR);
-                            emailTxt.setText(user_emailR);
-                            facultyTxt.setText(facultyR);
-                            yearTxt.setText(yearR);
-
-
-
-*/
-
-
-
-
-
-
 
                 }
 

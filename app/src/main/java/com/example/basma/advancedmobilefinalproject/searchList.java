@@ -57,7 +57,6 @@ public class searchList extends ArrayAdapter {
             @Override
             public void onClick(View v) {
 
-
                 Intent intent = new Intent(context,FriendProfileActivity.class);
                 String UserId = searchItem.getUser().getId();
                 intent.putExtra("id",UserId);
@@ -66,65 +65,6 @@ public class searchList extends ArrayAdapter {
 
             }
         });
-
-   /*     changeStatusBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-                LayoutInflater inflater=context.getLayoutInflater();
-                final View displayView = inflater.inflate(R.layout.add_book,null);
-                dialogBuilder.setView(displayView);
-
-                final EditText bookName = (EditText)displayView.findViewById(R.id.editTextName);
-                final Spinner status = (Spinner)displayView.findViewById(R.id.statusSpinner);
-                Button register=(Button)displayView.findViewById(R.id.doneBtn);
-
-                dialogBuilder.setTitle("Updating book status");
-
-                final AlertDialog alertDialog = dialogBuilder.create();
-                alertDialog.show();
-                register.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        String n =bookName.getText().toString().trim();
-                        String g =status.getSelectedItem().toString();
-
-
-                        if(!TextUtils.isEmpty(n))
-                        {
-
-                            Book bookUpdated = new Book(n,g);
-                            booksList.set(position,bookUpdated);
-                            notifyDataSetChanged();
-
-                            //txtName.setText(bookUpdated.getBook_Name());
-                            //txtStatus.setText(bookUpdated.getBook_Status());
-                            alertDialog.dismiss();
-                        }
-
-                    }
-                });
-
-
-
-
-
-
-            }
-        });
-
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                booksList.remove(book);
-                notifyDataSetChanged();
-
-            }
-        });
-
-        */
 
         return listViewItem;
     }
